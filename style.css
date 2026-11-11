@@ -1,0 +1,216 @@
+/* Reset e Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* Toast Notifications */
+.toast {
+    min-width: 250px;
+    max-width: 350px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #1E293B;
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    border-left: 4px solid #10B981;
+}
+
+.toast.error {
+    border-left-color: #EF4444;
+}
+
+.toast.success {
+    border-left-color: #10B981;
+}
+
+.toast.warning {
+    border-left-color: #F59E0B;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Container do App */
+.app-container {
+    position: relative;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Abas */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Navegação */
+.nav-btn {
+    transition: all 0.3s ease;
+}
+
+.nav-btn.active {
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+.nav-btn.active span {
+    color: #10B981;
+}
+
+.nav-btn:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Inputs */
+input[type="number"],
+input[type="text"] {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+/* Checkboxes e Radios */
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+}
+
+/* Botões */
+button {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Scrollbar Personalizada */
+main::-webkit-scrollbar {
+    width: 6px;
+}
+
+main::-webkit-scrollbar-track {
+    background: #0F172A;
+}
+
+main::-webkit-scrollbar-thumb {
+    background: #1E293B;
+    border-radius: 3px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Responsividade para Desktop */
+@media (min-width: 640px) {
+    .app-container {
+        margin: 2rem auto;
+        max-height: 90vh;
+    }
+}
+
+/* Animações de Resultado */
+#resultado-salario,
+#resultado-orcamento,
+#resultado-meta,
+#resultado-quiz {
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Barras de Progresso */
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+/* Lista de Metas e Histórico */
+.meta-item,
+.historico-item {
+    background: #0F172A;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 3px solid #10B981;
+    transition: all 0.2s ease;
+}
+
+.meta-item:hover,
+.historico-item:hover {
+    transform: translateX(4px);
+    background: #162032;
+}
+
+.meta-item .delete-btn,
+.historico-item .delete-btn {
+    color: #EF4444;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s ease;
+}
+
+.meta-item .delete-btn:hover,
+.historico-item .delete-btn:hover {
+    color: #DC2626;
+}

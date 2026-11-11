@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalárioCerto - Seu Primeiro Salário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    
+    <div class="app-container w-full max-w-[430px] bg-[#0F172A] min-h-screen sm:min-h-[800px] sm:rounded-3xl shadow-2xl overflow-hidden relative flex flex-col">
+        
+        <!-- Header Fixo -->
+        <header class="bg-[#1E293B] p-4 text-center border-b border-gray-700 sticky top-0 z-10">
+            <div class="flex items-center justify-center gap-2">
+                <svg class="w-8 h-8 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h1 class="text-2xl font-bold text-[#10B981]">SalárioCerto</h1>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Do primeiro holerite à conquista da sua independência</p>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 overflow-y-auto p-4 pb-20">
+            
+            <!-- Aba 1: Salário -->
+            <section id="tab-salario" class="tab-content active">
+                <div class="card bg-[#1E293B] rounded-2xl p-5 mb-4">
+                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Simulador de Salário Líquido
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Salário Bruto (R$)</label>
+                            <input type="number" id="salario-bruto" placeholder="Ex: 1500,00" 
+                                class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="desconto-inss" checked 
+                                    class="w-5 h-5 accent-[#10B981] rounded">
+                                <span class="text-gray-300">Desconto INSS (8%)</span>
+                            </label>
+                            
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="desconto-vt" checked 
+                                    class="w-5 h-5 accent-[#10B981] rounded">
+                                <span class="text-gray-300">Vale Transporte (6%)</span>
+                            </label>
+                            
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="desconto-fgts" 
+                                    class="w-5 h-5 accent-[#10B981] rounded">
+                                <span class="text-gray-300">FGTS (8% - não descontado)</span>
+                            </label>
+                            
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-2">Outros Descontos (R$)</label>
+                                <input type="number" id="outros-descontos" placeholder="Ex: plano de saúde" value="0"
+                                    class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-2">Benefícios (R$)</label>
+                                <input type="number" id="beneficios" placeholder="Ex: vale refeição" value="0"
+                                    class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                            </div>
+                        </div>
+                        
+                        <button onclick="calcularSalario()" 
+                            class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3 rounded-xl transition transform hover:scale-105 active:scale-95">
+                            Calcular Salário Líquido
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Resultado do Salário -->
+                <div id="resultado-salario" class="hidden">
+                    <div class="card bg-[#1E293B] rounded-2xl p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-white font-semibold">Resultado</h3>
+                            <button onclick="salvarCalculoSalario()" class="text-[#10B981] text-sm hover:underline">💾 Salvar</button>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">Salário Bruto</span>
+                                <span id="valor-bruto" class="text-white font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">INSS</span>
+                                <span id="valor-inss" class="text-red-400 font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">Vale Transporte</span>
+                                <span id="valor-vt" class="text-red-400 font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">Outros Descontos</span>
+                                <span id="valor-outros" class="text-red-400 font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">Benefícios</span>
+                                <span id="valor-beneficios" class="text-green-400 font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <span class="text-gray-400">Total de Descontos</span>
+                                <span id="valor-descontos" class="text-red-400 font-medium">R$ 0,00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-3 bg-[#10B981] bg-opacity-20 rounded-xl px-4">
+                                <span class="text-[#10B981] font-semibold">Salário Líquido</span>
+                                <span id="valor-liquido" class="text-[#10B981] font-bold text-xl">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Histórico de Cálculos -->
+                    <div class="card bg-[#1E293B] rounded-2xl p-5 mt-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-white font-semibold">📋 Histórico</h3>
+                            <button onclick="limparHistoricoSalario()" class="text-red-400 text-xs hover:underline">Limpar</button>
+                        </div>
+                        <div id="historico-salario" class="space-y-2 max-h-40 overflow-y-auto">
+                            <p class="text-gray-500 text-sm text-center">Nenhum cálculo salvo</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Aba 2: Orçamento -->
+            <section id="tab-orcamento" class="tab-content hidden">
+                <div class="card bg-[#1E293B] rounded-2xl p-5 mb-4">
+                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                        </svg>
+                        Distribuidor 50/30/20
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Valor Disponível (R$)</label>
+                            <input type="number" id="valor-disponivel" placeholder="Ex: 1380,00" 
+                                class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                        </div>
+                        
+                        <button onclick="gerarDistribuicao()" 
+                            class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3 rounded-xl transition transform hover:scale-105 active:scale-95">
+                            Gerar Distribuição
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Resultado do Orçamento -->
+                <div id="resultado-orcamento" class="hidden space-y-4">
+                    <!-- Gráfico -->
+                    <div class="card bg-[#1E293B] rounded-2xl p-5">
+                        <canvas id="orcamento-chart" height="200"></canvas>
+                    </div>
+                    
+                    <!-- Necessidades -->
+                    <div class="card bg-[#1E293B] rounded-2xl p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                                Necessidades Básicas
+                            </span>
+                            <span class="text-[#10B981] font-bold">50%</span>
+                        </div>
+                        <div class="w-full bg-[#0F172A] rounded-full h-4 mb-2">
+                            <div class="bg-[#10B981] h-4 rounded-full transition-all duration-500" style="width: 50%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Aluguel, Transporte, Alimentação</p>
+                        <p id="valor-necessidades" class="text-white font-bold text-xl mt-2">R$ 0,00</p>
+                    </div>
+                    
+                    <!-- Desejos -->
+                    <div class="card bg-[#1E293B] rounded-2xl p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Desejos Pessoais
+                            </span>
+                            <span class="text-blue-400 font-bold">30%</span>
+                        </div>
+                        <div class="w-full bg-[#0F172A] rounded-full h-4 mb-2">
+                            <div class="bg-blue-400 h-4 rounded-full transition-all duration-500" style="width: 30%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Lazer, Passeios, Assinaturas</p>
+                        <p id="valor-desejos" class="text-white font-bold text-xl mt-2">R$ 0,00</p>
+                    </div>
+                    
+                    <!-- Reserva -->
+                    <div class="card bg-[#1E293B] rounded-2xl p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                Reserva e Futuro
+                            </span>
+                            <span class="text-purple-400 font-bold">20%</span>
+                        </div>
+                        <div class="w-full bg-[#0F172A] rounded-full h-4 mb-2">
+                            <div class="bg-purple-400 h-4 rounded-full transition-all duration-500" style="width: 20%"></div>
+                        </div>
+                        <p class="text-gray-400 text-sm">Poupança, Investimento</p>
+                        <p id="valor-reserva" class="text-white font-bold text-xl mt-2">R$ 0,00</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Aba 3: Metas -->
+            <section id="tab-metas" class="tab-content hidden">
+                <div class="card bg-[#1E293B] rounded-2xl p-5 mb-4">
+                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                        Simulador de Metas
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Qual o seu objetivo?</label>
+                            <input type="text" id="meta-nome" placeholder="Ex: Comprar um Notebook" 
+                                class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Valor total da meta (R$)</label>
+                            <input type="number" id="meta-valor" placeholder="Ex: 3000,00" 
+                                class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Quanto consegue guardar por mês (R$)</label>
+                            <input type="number" id="meta-mensal" placeholder="Ex: 200,00" 
+                                class="w-full bg-[#0F172A] border border-gray-600 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#10B981] transition">
+                        </div>
+                        
+                        <button onclick="calcularMeta()" 
+                            class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3 rounded-xl transition transform hover:scale-105 active:scale-95">
+                            Calcular Tempo
+                        </button>
+                        
+                        <button onclick="adicionarMeta()" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition transform hover:scale-105 active:scale-95">
+                            + Adicionar à Lista
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Resultado da Meta -->
+                <div id="resultado-meta" class="hidden">
+                    <div class="card bg-[#1E293B] rounded-2xl p-5 text-center">
+                        <div class="text-4xl mb-4">🏆</div>
+                        <h3 class="text-white font-semibold mb-3">Tempo para Conquistar</h3>
+                        <p id="meta-resultado" class="text-gray-300 text-lg leading-relaxed"></p>
+                        <div id="meta-meses" class="mt-4 text-[#10B981] font-bold text-2xl"></div>
+                        <p id="meta-ano" class="mt-2 text-gray-400 text-sm"></p>
+                    </div>
+                </div>
+                
+                <!-- Lista de Metas Salvas -->
+                <div class="card bg-[#1E293B] rounded-2xl p-5 mt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-white font-semibold flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            Minhas Metas
+                        </h3>
+                        <button onclick="limparMetas()" class="text-red-400 text-xs hover:underline">Limpar</button>
+                    </div>
+                    <div id="lista-metas" class="space-y-2 max-h-60 overflow-y-auto">
+                        <p class="text-gray-500 text-sm text-center">Nenhuma meta salva</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Aba 4: Quiz -->
+            <section id="tab-quiz" class="tab-content hidden">
+                <div class="card bg-[#1E293B] rounded-2xl p-5 mb-4">
+                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        Quiz de Perfil Financeiro
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">1. Quando você recebe seu salário, o que faz primeiro?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q1" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Já planejo gastos imediatos</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q1" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Guardo uma parte antes de gastar</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q1" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Divido entre gastos e poupança</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">2. Você costuma fazer compras por impulso?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q2" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Sim, sempre que vejo algo legal</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q2" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Raramente, penso antes</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q2" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Nunca, só compro o necessário</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">3. Como você lida com dinheiro sobrando no fim do mês?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q3" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Gasto em algo especial</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q3" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Guardo para emergências</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q3" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Investo para o futuro</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">4. Você costuma fazer um planejamento mensal de gastos?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q4" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Não, gasto conforme preciso</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q4" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Às vezes, quando lembro</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q4" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Sim, sempre planejo tudo</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">5. Como você usa o cartão de crédito?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q5" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Uso muito, às vezes perco o controle</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q5" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Uso com cuidado, pago tudo à vista</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q5" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Prefiro não usar cartão</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-300 text-sm mb-3">6. Você tem uma reserva de emergência?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q6" value="a" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Não, não tenho reserva</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q6" value="b" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Tenho um pouco guardado</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer p-3 bg-[#0F172A] rounded-xl hover:bg-gray-800 transition">
+                                    <input type="radio" name="q6" value="c" class="w-4 h-4 accent-[#10B981]">
+                                    <span class="text-gray-300 text-sm">Sim, tenho reserva completa</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button onclick="calcularQuiz()" 
+                            class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3 rounded-xl transition transform hover:scale-105 active:scale-95">
+                            Descobrir Meu Perfil
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Resultado do Quiz -->
+                <div id="resultado-quiz" class="hidden">
+                    <div class="card bg-[#1E293B] rounded-2xl p-5 text-center">
+                        <div id="quiz-emoji" class="text-5xl mb-4"></div>
+                        <h3 class="text-white font-semibold mb-2">Seu Perfil:</h3>
+                        <p id="quiz-perfil" class="text-[#10B981] font-bold text-2xl mb-4"></p>
+                        <div class="bg-[#0F172A] rounded-xl p-4 text-left mb-4">
+                            <p class="text-gray-400 text-sm mb-2">💡 Dica Personalizada:</p>
+                            <p id="quiz-dica" class="text-gray-300 text-sm"></p>
+                        </div>
+                        <button onclick="refazerQuiz()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 rounded-xl transition">
+                            Refazer Quiz
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bg-[#1E293B] border-t border-gray-700 p-2 sticky bottom-0 z-10">
+            <div class="flex justify-around">
+                <button onclick="switchTab('salario')" class="nav-btn active flex flex-col items-center p-2 rounded-xl transition" data-tab="salario">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-xs text-gray-400">Salário</span>
+                </button>
+                
+                <button onclick="switchTab('orcamento')" class="nav-btn flex flex-col items-center p-2 rounded-xl transition" data-tab="orcamento">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                    </svg>
+                    <span class="text-xs text-gray-400">Orçamento</span>
+                </button>
+                
+                <button onclick="switchTab('metas')" class="nav-btn flex flex-col items-center p-2 rounded-xl transition" data-tab="metas">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                    <span class="text-xs text-gray-400">Metas</span>
+                </button>
+                
+                <button onclick="switchTab('quiz')" class="nav-btn flex flex-col items-center p-2 rounded-xl transition" data-tab="quiz">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span class="text-xs text-gray-400">Quiz</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Footer -->
+        <footer class="bg-[#0F172A] p-3 text-center border-t border-gray-800">
+            <p class="text-gray-500 text-xs">⚠️ Cálculos com dados fictícios para fins educacionais</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
